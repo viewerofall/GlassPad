@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=GlassPad
+Comment= Fast,sleek,glass notepad for quick needs
+Exec=/PATH/TO/EXECUTABLE
+Terminal=false
+Type=Application
+X-GNOME-UsesNotifications=true
+Icon=PATH/TO/IMAGE/glass_notepad.png
