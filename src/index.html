@@ -1,0 +1,84 @@
+<!-- Update src/index.html - add save button to toolbar -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scratchpad</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Custom Titlebar -->
+    <div class="titlebar" data-tauri-drag-region>
+      <div class="titlebar-drag-region"></div>
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search notes..." class="search-input">
+      </div>
+      <div class="save-status" id="saveStatus">Saved</div>
+      <div class="window-controls">
+        <button class="window-btn minimize" id="minimizeBtn">−</button>
+        <button class="window-btn maximize" id="maximizeBtn">□</button>
+        <button class="window-btn close" id="closeBtn">×</button>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <!-- Sidebar with folders -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <h3>Folders</h3>
+          <button class="icon-btn" id="newFolderBtn" title="New Folder">+</button>
+        </div>
+        <div class="folder-tree" id="folderTree"></div>
+      </div>
+
+      <!-- Notes and editor area -->
+      <div class="content-area">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <button class="tool-btn" id="newNoteBtn" title="New Note (Ctrl+N)">
+            <span>+ Note</span>
+          </button>
+
+          <button class="tool-btn" id="saveBtn" title="Save (Ctrl+S)">
+            <span>💾 Save</span>
+          </button>
+
+          <div class="divider"></div>
+
+          <button class="tool-btn" data-command="bold" title="Bold (Ctrl+B)">
+            <strong>B</strong>
+          </button>
+          <button class="tool-btn" data-command="italic" title="Italic (Ctrl+I)">
+            <em>I</em>
+          </button>
+          <button class="tool-btn" data-command="underline" title="Underline (Ctrl+U)">
+            <u>U</u>
+          </button>
+
+          <div class="divider"></div>
+
+          <label class="tool-label">
+            Size:
+            <input type="number" id="fontSizeInput" min="10" max="32" value="16">
+          </label>
+
+          <input type="color" id="highlightColor" class="color-picker" value="#ffd700" title="Highlight">
+          <button class="tool-btn" id="highlightBtn" title="Highlight">H</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-bar">
+          <div class="tabs-container" id="tabsContainer"></div>
+        </div>
+
+        <!-- Editor -->
+        <div class="editor-container" id="editorContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
