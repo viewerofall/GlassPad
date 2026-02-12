@@ -1,0 +1,16 @@
+{
+  "name": "scratchpad",
+  "version": "0.1.0",
+  "description": "A lightweight scratchpad",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}
