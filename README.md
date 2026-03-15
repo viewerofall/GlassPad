@@ -1,6 +1,6 @@
-**⚠️ GLASSPAD IS CURRENTLY IN ALPHA BUGS ARE EXPECTED⚠️**
 
-**⚠️ THIS APP WILL NOT BE PORTED TO WINDOWS BY ME MAKE A PULL REQUEST IF YOU ARE PORTING TO WINDOWS ⚠️**
+
+**⚠️ REQUIRES LIBWEB2GTK/WEB2GTK ⚠️**
 # Scratchpad
 
 A lightweight, glass-themed note-taking application built with Tauri (Rust) and JavaScript.
