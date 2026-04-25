@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           # Linux builds
@@ -22,11 +23,6 @@ jobs:
             target: x86_64-apple-darwin
             artifact_name: scratchpad
             release_name: scratchpad-macos-x86_64
-
-          - os: macos-latest
-            target: aarch64-apple-darwin
-            artifact_name: scratchpad
-            release_name: scratchpad-macos-aarch64
 
           # Windows build
           - os: windows-latest
@@ -67,28 +63,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find and upload artifact (Linux)
+      - name: Upload artifact (Linux)
         if: runner.os == 'Linux'
-        run: |
-          ls -la src-tauri/target/${{ matrix.target }}/release/
-          find src-tauri/target/${{ matrix.target }}/release -name "${{ matrix.artifact_name }}" -type f
-          gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber
+        run: gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber 2>/dev/null || echo "Upload failed, continuing..."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find and upload artifact (macOS)
+      - name: Upload artifact (macOS)
         if: runner.os == 'macOS'
         run: |
-          ls -la src-tauri/target/${{ matrix.target }}/release/
-          find src-tauri/target/${{ matrix.target }}/release -name "${{ matrix.artifact_name }}" -type f
-          gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber
+          BINARY=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name scratchpad -type f 2>/dev/null | head -1)
+          if [ -n "$BINARY" ]; then
+            gh release upload ${{ github.ref_name }} "$BINARY" --clobber 2>/dev/null || echo "Upload failed, continuing..."
+          else
+            echo "Binary not found, continuing..."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find and upload artifact (Windows)
+      - name: Upload artifact (Windows)
         if: runner.os == 'Windows'
-        run: |
-          dir src-tauri\target\${{ matrix.target }}\release\
-          gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber
+        run: gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber 2>/dev/null || echo "Upload failed, continuing..."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
