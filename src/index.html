@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scratchpad</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://esm.sh/highlight.js@11/styles/atom-one-dark.css">
 </head>
 <body>
   <div class="app-container">
@@ -15,6 +16,7 @@
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search notes..." class="search-input">
       </div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
       <div class="word-count" id="wordCount"></div>
       <div class="save-status" id="saveStatus">Saved</div>
       <div class="window-controls">
@@ -43,7 +45,13 @@
           <h3>Folders</h3>
           <button class="icon-btn" id="newFolderBtn" title="New Folder">+</button>
         </div>
+        <div class="bulk-actions" id="bulkActions" style="display:none;">
+          <button class="bulk-action-btn" id="bulkDeleteBtn">Delete</button>
+          <button class="bulk-action-btn" id="bulkMoveBtn">Move</button>
+        </div>
         <div class="folder-tree" id="folderTree"></div>
+        <div class="sidebar-section-header" id="tagSectionHeader">Tags</div>
+        <div class="tag-list" id="tagList"></div>
       </div>
 
       <!-- Notes and editor area -->
@@ -66,19 +74,31 @@
           <button class="tool-btn" data-command="italic" title="Italic (Ctrl+I)">
             <em>I</em>
           </button>
-          <button class="tool-btn" data-command="underline" title="Underline (Ctrl+U)">
+          <button class="tool-btn" id="underlineBtn" title="Underline">
             <u>U</u>
           </button>
 
           <div class="divider"></div>
 
-          <label class="tool-label">
-            Size:
-            <input type="number" id="fontSizeInput" min="10" max="32" value="16">
-          </label>
+          <button class="tool-btn" id="bulletBtn" title="Bullet Points">
+            • List
+          </button>
+          <button class="tool-btn" id="headingBtn" title="Heading (##)">
+            H2
+          </button>
 
-          <input type="color" id="highlightColor" class="color-picker" value="#ffd700" title="Highlight">
-          <button class="tool-btn" id="highlightBtn" title="Highlight">H</button>
+          <div class="divider"></div>
+
+          <button class="tool-btn" id="undoBtn" title="Undo (Ctrl+Z)">↩</button>
+          <button class="tool-btn" id="redoBtn" title="Redo (Ctrl+Y)">↪</button>
+
+          <div class="divider"></div>
+
+          <button class="tool-btn active" id="autosaveBtn" title="Toggle Auto-save">💾 Auto</button>
+
+          <div class="divider"></div>
+
+          <button class="tool-btn" id="bulkSelectBtn" title="Bulk Select">☑ Select</button>
         </div>
 
         <!-- Tabs -->
@@ -87,7 +107,12 @@
         </div>
 
         <!-- Editor -->
-        <div class="editor-container" id="editorContainer"></div>
+        <div class="editor-container" id="editorContainer">
+          <div class="editor-mode-bar">
+            <button class="mode-btn active" id="editModeBtn">Edit</button>
+            <button class="mode-btn" id="previewModeBtn">Preview</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

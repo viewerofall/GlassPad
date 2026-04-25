@@ -425,6 +425,12 @@ background: rgba(255, 255, 255, 0.06);
     overflow-x: hidden;
 }
 
+.editor:empty::before {
+    content: attr(data-placeholder);
+    color: rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+}
+
 .editor::selection {
     background: rgba(99, 102, 241, 0.3);
 }
@@ -550,4 +556,553 @@ background: rgba(255, 255, 255, 0.06);
 
 .save-status.error {
     color: rgba(239, 68, 68, 0.9);
+}
+
+/* Tags */
+.sidebar-section-header {
+    padding: 8px 16px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tag-list {
+    padding: 4px 8px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    max-height: 200px;
+}
+
+.tag-item {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: rgba(199, 146, 234, 0.7);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.tag-item:hover {
+    background: rgba(199, 146, 234, 0.08);
+    color: #c792ea;
+}
+
+.tag-item.active {
+    background: rgba(199, 146, 234, 0.15);
+    color: #c792ea;
+    font-weight: 600;
+}
+
+/* Editor with tag bar */
+.editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    min-height: 0;
+}
+
+.editor-wrapper .editor {
+    flex: 1;
+    height: auto;
+    max-height: none;
+}
+
+.editor-wrapper > .editor-textarea,
+.editor-wrapper > .editor-preview {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+}
+
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.tag-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(199, 146, 234, 0.03);
+}
+
+.tag-section-header {
+    padding: 8px 16px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c792ea;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tag-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 16px 8px;
+    min-height: 32px;
+    background: transparent;
+}
+
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: rgba(199, 146, 234, 0.15);
+    border: 1px solid rgba(199, 146, 234, 0.3);
+    border-radius: 12px;
+    color: #c792ea;
+    font-size: 11px;
+    cursor: default;
+}
+
+.tag-chip-remove {
+    background: none;
+    border: none;
+    color: rgba(199, 146, 234, 0.6);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.tag-chip-remove:hover {
+    color: #c792ea;
+}
+
+.tag-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    min-width: 80px;
+    flex: 1;
+}
+
+.tag-input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+/* Wiki-link autocomplete */
+.wiki-autocomplete {
+    position: fixed;
+    background: rgba(20, 18, 30, 0.97);
+    border: 1px solid rgba(199, 146, 234, 0.3);
+    border-radius: 8px;
+    min-width: 200px;
+    max-width: 320px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 500;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 4px 0;
+}
+
+.wiki-option {
+    padding: 7px 14px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.wiki-option:hover, .wiki-option.selected {
+    background: rgba(199, 146, 234, 0.12);
+    color: #c792ea;
+}
+
+/* Backlinks panel */
+.backlinks-panel {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 229, 200, 0.02);
+}
+
+.backlinks-header {
+    padding: 8px 16px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #00e5c8;
+    user-select: none;
+    transition: color 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.backlinks-header:hover {
+    color: #00e5c8;
+    opacity: 0.8;
+}
+
+.backlinks-header.collapsed::before {
+    content: '▶';
+    display: inline-block;
+}
+
+.backlinks-list {
+    padding: 4px 16px 8px;
+}
+
+.backlinks-list.hidden {
+    display: none;
+}
+
+.backlink-item {
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: rgba(0, 229, 200, 0.8);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: 2px;
+}
+
+.backlink-item:hover {
+    background: rgba(0, 229, 200, 0.08);
+    color: #00e5c8;
+    padding-left: 16px;
+}
+
+/* Drag and drop */
+.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
+
+.folder-item.drop-target {
+    background: rgba(0, 229, 200, 0.12);
+    border: 1px dashed rgba(0, 229, 200, 0.4);
+    color: #00e5c8;
+    border-radius: 6px;
+}
+
+.folder-item[draggable="true"],
+.note-item[draggable="true"] {
+    cursor: grab;
+}
+
+/* Markdown editor styles */
+.editor-mode-bar {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mode-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.mode-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.mode-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    color: rgba(167, 139, 250, 0.95);
+    border-color: rgba(167, 139, 250, 0.3);
+}
+
+.editor-textarea {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.95);
+    border: none;
+    outline: none;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 16px;
+    line-height: 1.7;
+    resize: none;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.editor-textarea::selection {
+    background: rgba(99, 102, 241, 0.3);
+}
+
+.editor-preview {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.95);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.editor-preview h1, .editor-preview h2, .editor-preview h3 {
+    color: rgba(167, 139, 250, 0.95);
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+.editor-preview p {
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+.editor-preview ul, .editor-preview ol {
+    margin-left: 24px;
+    margin-bottom: 12px;
+}
+
+.editor-preview li {
+    margin-bottom: 4px;
+}
+
+.editor-preview code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    color: rgba(0, 229, 200, 0.8);
+}
+
+.editor-preview a {
+    color: rgba(99, 102, 241, 0.9);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.editor-preview a:hover {
+    color: rgba(167, 139, 250, 0.95);
+}
+
+/* Bulk actions */
+.bulk-actions {
+    padding: 8px 12px;
+    background: rgba(239, 68, 68, 0.08);
+    border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+    display: flex;
+    gap: 8px;
+}
+
+.bulk-action-btn {
+    padding: 6px 12px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 4px;
+    color: rgba(239, 68, 68, 0.9);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.bulk-action-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    color: #ef4444;
+}
+
+.note-checkbox {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    .titlebar, .toolbar, .sidebar, .tabs-bar, .editor-mode-bar, .tag-section, .backlinks-panel {
+        display: none !important;
+    }
+    .editor-container, .editor-preview {
+        background: white;
+        color: black;
+        padding: 0;
+        overflow: visible;
+    }
+    .editor-preview h1, .editor-preview h2, .editor-preview h3 {
+        color: black;
+    }
+    .editor-preview a {
+        color: #0066cc;
+    }
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 8px;
+    transition: color 0.2s;
+}
+
+.theme-toggle:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Light Theme */
+body.light-theme {
+    background: #f5f5f5;
+}
+
+body.light-theme .app-container {
+    background: rgba(245, 245, 245, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .titlebar {
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .search-input {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+body.light-theme .search-input:focus {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+body.light-theme .search-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+body.light-theme .word-count {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+body.light-theme .theme-toggle {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body.light-theme .theme-toggle:hover {
+    color: rgba(0, 0, 0, 0.9);
+}
+
+body.light-theme .sidebar {
+    background: rgba(255, 255, 255, 0.5);
+    border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .folder-item,
+body.light-theme .note-item {
+    color: #333;
+}
+
+body.light-theme .folder-item:hover,
+body.light-theme .note-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .note-item.active {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+body.light-theme .toolbar {
+    background: rgba(255, 255, 255, 0.3);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .tool-btn {
+    color: #333;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .tool-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .editor-textarea {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+body.light-theme .editor-preview {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+body.light-theme .editor-preview a {
+    color: #0066cc;
+}
+
+body.light-theme .tag-chip {
+    background: rgba(199, 146, 234, 0.2);
+    color: #7c3aed;
+}
+
+body.light-theme .modal {
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+}
+
+body.light-theme .modal-input {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #333;
+}
+
+body.light-theme .modal-btn {
+    background: rgba(99, 102, 241, 0.1);
+    color: #333;
+}
+
+/* Code syntax highlighting */
+.editor-preview code,
+.editor-preview pre {
+    font-family: 'Courier New', monospace;
+}
+
+.editor-preview pre {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 12px 0;
+    border-left: 3px solid #6366f1;
+}
+
+.editor-preview code {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.editor-preview pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+}
+
+body.light-theme .editor-preview pre {
+    background: #f5f5f5;
+    color: #333;
+    border-left-color: #6366f1;
+}
+
+body.light-theme .editor-preview code {
+    background: #f5f5f5;
+    color: #333;
 }
