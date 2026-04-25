@@ -59,11 +59,13 @@ jobs:
 
       - name: Create release (once per tag)
         if: matrix.target == 'x86_64-unknown-linux-gnu'
+        shell: bash
         run: gh release create ${{ github.ref_name }} --draft 2>/dev/null || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifacts
+        shell: bash
         run: |
           # Try bundle first, fall back to raw binary
           BUNDLE=$(find src-tauri/target/${{ matrix.target }}/release -type f \( -name "scratchpad" -o -name "scratchpad.exe" -o -name "*.dmg" -o -name "*.AppImage" \) 2>/dev/null | head -1)
