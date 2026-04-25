@@ -63,26 +63,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload artifact (Linux)
-        if: runner.os == 'Linux'
-        run: gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber 2>/dev/null || echo "Upload failed, continuing..."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload artifact (macOS)
-        if: runner.os == 'macOS'
+      - name: Upload artifacts
         run: |
-          BINARY=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name scratchpad -type f 2>/dev/null | head -1)
-          if [ -n "$BINARY" ]; then
-            gh release upload ${{ github.ref_name }} "$BINARY" --clobber 2>/dev/null || echo "Upload failed, continuing..."
-          else
-            echo "Binary not found, continuing..."
+          # Try bundle first, fall back to raw binary
+          BUNDLE=$(find src-tauri/target/${{ matrix.target }}/release -type f \( -name "scratchpad" -o -name "scratchpad.exe" -o -name "*.dmg" -o -name "*.AppImage" \) 2>/dev/null | head -1)
+          if [ -n "$BUNDLE" ]; then
+            gh release upload ${{ github.ref_name }} "$BUNDLE" --clobber 2>/dev/null || echo "Upload failed for $BUNDLE"
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload artifact (Windows)
-        if: runner.os == 'Windows'
-        run: gh release upload ${{ github.ref_name }} src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }} --clobber 2>/dev/null || echo "Upload failed, continuing..."
+          # Also try raw binary as fallback
+          if [ -f "src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" ]; then
+            gh release upload ${{ github.ref_name }} "src-tauri/target/${{ matrix.target }}/release/${{ matrix.artifact_name }}" --clobber 2>/dev/null || echo "Upload failed for binary"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
