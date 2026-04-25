@@ -4,6 +4,8 @@ import { invoke } from 'https://esm.sh/@tauri-apps/api@2/core';
 
 const appWindow = getCurrentWindow();
 
+document.addEventListener('contextmenu', e => e.preventDefault());
+
 class ScratchpadApp {
     constructor() {
         this.notes = [];
@@ -24,6 +26,47 @@ class ScratchpadApp {
         this.editorContainer = document.getElementById('editorContainer');
         this.searchInput = document.getElementById('searchInput');
         this.saveStatus = document.getElementById('saveStatus');
+        this.modalOverlay = document.getElementById('modalOverlay');
+        this.modalLabel = document.getElementById('modalLabel');
+        this.modalInput = document.getElementById('modalInput');
+        this.modalConfirm = document.getElementById('modalConfirm');
+        this.modalCancel = document.getElementById('modalCancel');
+        this.wordCount = document.getElementById('wordCount');
+    }
+
+    updateWordCount(text) {
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const chars = text.length;
+        this.wordCount.textContent = `${words}w ${chars}c`;
+    }
+
+    showPrompt(label, defaultValue = '') {
+        return new Promise((resolve) => {
+            this.modalLabel.textContent = label;
+            this.modalInput.value = defaultValue;
+            this.modalOverlay.classList.add('visible');
+            this.modalInput.focus();
+            this.modalInput.select();
+
+            const finish = (value) => {
+                this.modalOverlay.classList.remove('visible');
+                this.modalConfirm.removeEventListener('click', onConfirm);
+                this.modalCancel.removeEventListener('click', onCancel);
+                this.modalInput.removeEventListener('keydown', onKey);
+                resolve(value);
+            };
+
+            const onConfirm = () => finish(this.modalInput.value);
+            const onCancel = () => finish(null);
+            const onKey = (e) => {
+                if (e.key === 'Enter') finish(this.modalInput.value);
+                if (e.key === 'Escape') finish(null);
+            };
+
+            this.modalConfirm.addEventListener('click', onConfirm);
+            this.modalCancel.addEventListener('click', onCancel);
+            this.modalInput.addEventListener('keydown', onKey);
+        });
     }
 
     updateSaveStatus(status) {
@@ -56,7 +99,7 @@ class ScratchpadApp {
             if (this.notes.length > 0) {
                 this.openNote(this.notes[0].id);
             } else {
-                this.createNewNote();
+                this.createNewNote(true);
             }
         } catch (error) {
             console.error('Failed to load data:', error);
@@ -214,13 +257,19 @@ class ScratchpadApp {
         div.dataset.noteId = note.id;
         div.innerHTML = `
         <span class="note-title">${note.title}</span>
+        <button class="rename-btn" title="Rename">✎</button>
         <button class="delete-btn">×</button>
         `;
 
         div.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('delete-btn')) {
+            if (!e.target.classList.contains('delete-btn') && !e.target.classList.contains('rename-btn')) {
                 this.openNote(note.id);
             }
+        });
+
+        div.querySelector('.rename-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.renameNote(note.id);
         });
 
         div.querySelector('.delete-btn').addEventListener('click', (e) => {
@@ -231,11 +280,44 @@ class ScratchpadApp {
         return div;
     }
 
-    async createNewNote() {
+    async renameNote(noteId) {
+        const note = this.notes.find(n => n.id === noteId);
+        if (!note) return;
+
+        const newTitle = await this.showPrompt('Rename note:', note.title);
+        if (newTitle === null) return;
+
+        const trimmed = newTitle.trim();
+        if (!trimmed || trimmed === note.title) return;
+
+        note.title = trimmed;
+        note.updated_at = Date.now();
+
+        const tab = this.openTabs.find(t => t.id === noteId);
+        if (tab) tab.title = trimmed;
+
+        this.renderTabs();
+        this.renderFolderTree();
+
+        try {
+            await invoke('save_note', { note });
+        } catch (error) {
+            console.error('Failed to rename note:', error);
+        }
+    }
+
+    async createNewNote(silent = false) {
+        let title = 'Untitled Note';
+        if (!silent) {
+            const input = await this.showPrompt('Note name:');
+            if (input === null) return;
+            if (input.trim()) title = input.trim();
+        }
+
         const timestamp = Date.now();
         const note = {
             id: `note-${timestamp}`,
-            title: 'Untitled Note',
+            title,
             content: '',
             folder: this.currentFolder,
             parent_id: null,
@@ -258,7 +340,7 @@ class ScratchpadApp {
     }
 
     async createNewFolder() {
-        const name = prompt('Folder name:');
+        const name = await this.showPrompt('Folder name:');
         if (!name) return;
 
         const folder = {
@@ -351,24 +433,17 @@ class ScratchpadApp {
         editor.spellcheck = false;
         editor.innerHTML = tab.content || '';
 
+        this.updateWordCount(editor.textContent);
+
         let saveTimeout;
         editor.addEventListener('input', () => {
             tab.content = editor.innerHTML;
             this.updateSaveStatus('saving');
+            this.updateWordCount(editor.textContent);
 
             // Auto-save after 2 seconds of no typing
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => this.saveCurrentNote(false), 2000);
-        });
-
-        // Update title on first line change
-        editor.addEventListener('blur', () => {
-            const firstLine = editor.textContent.split('\n')[0].trim();
-            if (firstLine && firstLine !== tab.title) {
-                tab.title = firstLine.substring(0, 50);
-                this.renderTabs();
-                this.renderFolderTree();
-            }
         });
 
         this.editorContainer.appendChild(editor);
@@ -422,6 +497,7 @@ class ScratchpadApp {
             } else {
                 this.activeTabId = null;
                 this.editorContainer.innerHTML = '';
+                this.wordCount.textContent = '';
             }
         }
 

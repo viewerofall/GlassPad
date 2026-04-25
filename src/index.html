@@ -15,11 +15,24 @@
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Search notes..." class="search-input">
       </div>
+      <div class="word-count" id="wordCount"></div>
       <div class="save-status" id="saveStatus">Saved</div>
       <div class="window-controls">
         <button class="window-btn minimize" id="minimizeBtn">−</button>
         <button class="window-btn maximize" id="maximizeBtn">□</button>
         <button class="window-btn close" id="closeBtn">×</button>
+      </div>
+    </div>
+
+    <!-- Custom prompt modal -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <div class="modal-label" id="modalLabel"></div>
+        <input type="text" class="modal-input" id="modalInput">
+        <div class="modal-buttons">
+          <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+          <button class="modal-btn confirm" id="modalConfirm">OK</button>
+        </div>
       </div>
     </div>
 
