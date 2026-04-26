@@ -14,26 +14,14 @@ ARCH=$(uname -m)
 case "$OS" in
     Linux)
         if [ "$ARCH" = "x86_64" ]; then
-            RELEASE_NAME="scratchpad-linux-x86_64"
-        elif [ "$ARCH" = "aarch64" ]; then
-            RELEASE_NAME="scratchpad-linux-aarch64"
+            RELEASE_NAME="scratchpad"
         else
-            echo "❌ Unsupported architecture: $ARCH"
-            exit 1
-        fi
-        ;;
-    Darwin)
-        if [ "$ARCH" = "x86_64" ]; then
-            RELEASE_NAME="scratchpad-macos-x86_64"
-        elif [ "$ARCH" = "arm64" ]; then
-            RELEASE_NAME="scratchpad-macos-aarch64"
-        else
-            echo "❌ Unsupported architecture: $ARCH"
+            echo "❌ Unsupported architecture: $ARCH (Linux x86_64 only)"
             exit 1
         fi
         ;;
     *)
-        echo "❌ Unsupported OS: $OS"
+        echo "❌ Unsupported OS: $OS (Linux only)"
         exit 1
         ;;
 esac
